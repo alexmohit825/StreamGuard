@@ -9,11 +9,13 @@ endpoints = [
     '/icon.svg'
 ]
 
-print("=== StreamGuard PWA Validation ===")
+base_url = "https://alexmohit825.github.io/StreamGuard"
+
+print("=== StreamGuard Live Production PWA Validation ===")
 for ep in endpoints:
-    url = f"http://127.0.0.1:8787{ep}"
+    url = f"{base_url}{ep}"
     req = urllib.request.urlopen(url)
     content = req.read()
-    print(f"[VERIFIED 200 OK] {ep:<16} | Bytes: {len(content):<6} | Type: {req.headers.get('Content-Type')}")
+    print(f"[PROD VERIFIED 200 OK] {ep:<16} | Bytes: {len(content):<6} | Type: {req.headers.get('Content-Type')}")
 
-print("=== All Assets Reachable & Validated ===")
+print("=== Production Deployment 100% Live & Validated ===")
