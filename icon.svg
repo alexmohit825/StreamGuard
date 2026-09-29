@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#0369a1" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="pulseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#4ade80" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Rounded Background Container -->
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad)" />
+  
+  <!-- Outer Diagnostic Radar Waves -->
+  <circle cx="256" cy="230" r="160" fill="none" stroke="#38bdf8" stroke-width="6" opacity="0.25" stroke-dasharray="8 8" />
+  <circle cx="256" cy="230" r="120" fill="none" stroke="#38bdf8" stroke-width="8" opacity="0.4" />
+  <circle cx="256" cy="230" r="80" fill="none" stroke="#4ade80" stroke-width="10" opacity="0.6" filter="url(#glow)" />
+  
+  <!-- Smart TV Frame -->
+  <rect x="116" y="130" width="280" height="190" rx="18" fill="#090d16" stroke="#e0f2fe" stroke-width="10" />
+  <rect x="130" y="144" width="252" height="162" rx="8" fill="#0b1329" />
+  
+  <!-- TV Stand Base -->
+  <path d="M 216 320 L 296 320 L 326 365 L 186 365 Z" fill="#334155" />
+  <line x1="160" y1="365" x2="352" y2="365" stroke="#94a3b8" stroke-width="10" stroke-linecap="round" />
+
+  <!-- Signal Pulse Waves inside Screen -->
+  <path d="M 160 225 Q 185 200 210 225 T 260 225 T 310 225 T 352 225" fill="none" stroke="url(#pulseGrad)" stroke-width="8" stroke-linecap="round" filter="url(#glow)" />
+  
+  <!-- Shield Badge -->
+  <path d="M 256 390 L 320 340 L 320 420 Q 256 470 256 470 Q 192 420 192 420 L 192 340 Z" fill="#0284c7" stroke="#ffffff" stroke-width="8" filter="url(#glow)" />
+  <path d="M 236 412 L 250 426 L 280 392" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

@@ -1,0 +1,19 @@
+{
+  "name": "StreamGuard TV Signal & Buffer Doctor",
+  "short_name": "StreamGuard",
+  "description": "Real-time Internet TV Signal, Bufferbloat, and Video Streaming Diagnostics Companion",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a0f1d",
+  "theme_color": "#0ea5e9",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "network", "productivity"]
+}
