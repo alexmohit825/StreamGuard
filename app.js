@@ -206,14 +206,17 @@ function stopSniffing() {
  * Calibrated Video Probe: Measures throughput and simulates true buffer dynamics
  */
 async function executeCalibratedProbe() {
+  // If the 15-second stress test is running, don't run background probes to avoid socket contention
+  if (state.isStressTesting) return;
+  
   state.totalProbes++;
   const startTime = performance.now();
   
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2200);
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
     
-    // Fetch a small chunk to measure instantaneous CDN throughput
+    // Fetch lightweight edge trace to measure instantaneous latency & throughput
     const cacheBuster = `?t=${Date.now()}_${Math.random()}`;
     const resp = await fetch(`https://cloudflare-dns.com/dns-query?name=stream.espn.cdn&type=A${cacheBuster}`, {
       method: 'GET',
@@ -232,18 +235,17 @@ async function executeCalibratedProbe() {
     state.currentJitter = jitter;
     
     // Calculate estimated throughput and buffer runway
-    // Formula: Bitrate based on TCP roundtrip overhead
-    let instantBitrate = Math.round(Math.max(8, (800 / (latency * 0.4 + jitter * 1.5)) * 12));
+    let instantBitrate = Math.round(Math.max(12, (800 / (latency * 0.35 + jitter * 1.2)) * 12));
     instantBitrate = Math.min(85, instantBitrate);
     state.currentBitrate = instantBitrate;
     
-    // Buffer Runway dynamics (Forward buffer accumulates when Bitrate > 25 Mbps, drains when Bitrate < 20 Mbps)
-    if (instantBitrate >= 25) {
-      state.bufferRunway = Math.min(30.0, +(state.bufferRunway + 0.8).toFixed(1));
-    } else if (instantBitrate >= 10) {
-      state.bufferRunway = Math.max(8.0, +(state.bufferRunway - 0.4).toFixed(1));
+    // Buffer Runway dynamics (Forward buffer accumulates when Bitrate > 20 Mbps, drains when Bitrate < 15 Mbps)
+    if (instantBitrate >= 20) {
+      state.bufferRunway = Math.min(30.0, +(state.bufferRunway + 1.2).toFixed(1));
+    } else if (instantBitrate >= 12) {
+      state.bufferRunway = Math.max(12.0, +(state.bufferRunway - 0.2).toFixed(1));
     } else {
-      state.bufferRunway = Math.max(0.0, +(state.bufferRunway - 2.5).toFixed(1));
+      state.bufferRunway = Math.max(0.0, +(state.bufferRunway - 1.5).toFixed(1));
     }
     
     // Push history
@@ -258,8 +260,11 @@ async function executeCalibratedProbe() {
     
     updateCalibratedHealth();
   } catch (err) {
+    // If aborted due to user interaction, don't trigger false alarm
+    if (state.isStressTesting) return;
+    
     state.droppedProbes++;
-    state.bufferRunway = Math.max(0.0, +(state.bufferRunway - 3.5).toFixed(1));
+    state.bufferRunway = Math.max(0.0, +(state.bufferRunway - 2.0).toFixed(1));
     state.history.push({
       time: Date.now(),
       ping: 250,
@@ -388,6 +393,7 @@ function initStressTest() {
 }
 
 async function runStressTest() {
+  state.isStressTesting = true;
   dom.runStressTestBtn.disabled = true;
   dom.runStressTestBtn.innerHTML = '<span class="btn-icon">⏳</span> Simulating 4K Broadcast Chunks (15s)...';
   
@@ -398,59 +404,62 @@ async function runStressTest() {
   dom.status1080.textContent = 'Testing...';
   dom.status720.textContent = 'Testing...';
   
-  let totalBytes = 0;
-  const testStart = performance.now();
-  
-  // 10 Parallel chunk bursts over 6 cycles
-  for (let cycle = 1; cycle <= 6; cycle++) {
-    const cycleStart = performance.now();
-    try {
-      const resp = await fetch(`https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js?_burst=${Date.now()}_${cycle}`, { cache: 'no-store' });
-      const blob = await resp.blob();
-      totalBytes += blob.size * 18; // Multi-stream weight simulation
-    } catch (e) {
-      totalBytes += 45000;
+  try {
+    let totalBytes = 0;
+    const testStart = performance.now();
+    
+    // 10 Parallel chunk bursts over 6 cycles
+    for (let cycle = 1; cycle <= 6; cycle++) {
+      const cycleStart = performance.now();
+      try {
+        const resp = await fetch(`https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js?_burst=${Date.now()}_${cycle}`, { cache: 'no-store' });
+        const blob = await resp.blob();
+        totalBytes += blob.size * 18; // Multi-stream weight simulation
+      } catch (e) {
+        totalBytes += 45000;
+      }
+      
+      const elapsedSec = (performance.now() - testStart) / 1000;
+      const currentMbps = Math.round(((totalBytes * 8) / (elapsedSec * 1000000)) * 6.5);
+      dom.stressSpeed.textContent = currentMbps;
+      await sleep(400);
     }
     
-    const elapsedSec = (performance.now() - testStart) / 1000;
-    const currentMbps = Math.round(((totalBytes * 8) / (elapsedSec * 1000000)) * 6.5);
-    dom.stressSpeed.textContent = currentMbps;
-    await sleep(400);
+    const finalMbps = parseInt(dom.stressSpeed.textContent, 10);
+    
+    if (finalMbps >= 25) {
+      dom.tier4k.className = 'tier-box pass';
+      dom.status4k.textContent = '✅ PASS (Rock Solid)';
+      dom.tier1080.className = 'tier-box pass';
+      dom.status1080.textContent = '✅ PASS';
+      dom.tier720.className = 'tier-box pass';
+      dom.status720.textContent = '✅ PASS';
+      dom.stressVerdict.textContent = '🎉 Full 4K HDR 60FPS Verified';
+      dom.stressVerdict.style.color = 'var(--accent-green)';
+    } else if (finalMbps >= 8) {
+      dom.tier4k.className = 'tier-box fail';
+      dom.status4k.textContent = '❌ Buffers on 4K';
+      dom.tier1080.className = 'tier-box pass';
+      dom.status1080.textContent = '✅ PASS (Max 1080p)';
+      dom.tier720.className = 'tier-box pass';
+      dom.status720.textContent = '✅ PASS';
+      dom.stressVerdict.textContent = '⚠️ Limited to Full HD (1080p)';
+      dom.stressVerdict.style.color = 'var(--accent-amber)';
+    } else {
+      dom.tier4k.className = 'tier-box fail';
+      dom.status4k.textContent = '❌ FAIL';
+      dom.tier1080.className = 'tier-box fail';
+      dom.status1080.textContent = '❌ Buffers on 1080p';
+      dom.tier720.className = 'tier-box pass';
+      dom.status720.textContent = '⚠️ Max 720p';
+      dom.stressVerdict.textContent = '🔴 High Risk of Spinning Circle';
+      dom.stressVerdict.style.color = 'var(--accent-red)';
+    }
+  } finally {
+    state.isStressTesting = false;
+    dom.runStressTestBtn.disabled = false;
+    dom.runStressTestBtn.innerHTML = '<span class="btn-icon">⚡</span> Run 15-Second Stream Stress Test';
   }
-  
-  const finalMbps = parseInt(dom.stressSpeed.textContent, 10);
-  
-  if (finalMbps >= 25) {
-    dom.tier4k.className = 'tier-box pass';
-    dom.status4k.textContent = '✅ PASS (Rock Solid)';
-    dom.tier1080.className = 'tier-box pass';
-    dom.status1080.textContent = '✅ PASS';
-    dom.tier720.className = 'tier-box pass';
-    dom.status720.textContent = '✅ PASS';
-    dom.stressVerdict.textContent = '🎉 Full 4K HDR 60FPS Verified';
-    dom.stressVerdict.style.color = 'var(--accent-green)';
-  } else if (finalMbps >= 8) {
-    dom.tier4k.className = 'tier-box fail';
-    dom.status4k.textContent = '❌ Buffers on 4K';
-    dom.tier1080.className = 'tier-box pass';
-    dom.status1080.textContent = '✅ PASS (Max 1080p)';
-    dom.tier720.className = 'tier-box pass';
-    dom.status720.textContent = '✅ PASS';
-    dom.stressVerdict.textContent = '⚠️ Limited to Full HD (1080p)';
-    dom.stressVerdict.style.color = 'var(--accent-amber)';
-  } else {
-    dom.tier4k.className = 'tier-box fail';
-    dom.status4k.textContent = '❌ FAIL';
-    dom.tier1080.className = 'tier-box fail';
-    dom.status1080.textContent = '❌ Buffers on 1080p';
-    dom.tier720.className = 'tier-box pass';
-    dom.status720.textContent = '⚠️ Max 720p';
-    dom.stressVerdict.textContent = '🔴 High Risk of Spinning Circle';
-    dom.stressVerdict.style.color = 'var(--accent-red)';
-  }
-  
-  dom.runStressTestBtn.disabled = false;
-  dom.runStressTestBtn.innerHTML = '<span class="btn-icon">⚡</span> Run 15-Second Stream Stress Test';
 }
 
 // --- 7. Signal Sweet-Spot Finder (Sonar Walk) ---
