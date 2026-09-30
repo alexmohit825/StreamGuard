@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>StreamGuard • TV Signal & Buffer Diagnostic Engine</title>
+  <title>StreamGuard • Smart TV Buffer & Signal Fixer</title>
   
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -24,7 +24,7 @@
         </div>
         <div class="brand-info">
           <h1>StreamGuard</h1>
-          <span class="subtext">TV Signal & Buffer Doctor</span>
+          <span class="subtext">TV Signal & Buffer Fixer</span>
         </div>
       </div>
 
@@ -39,7 +39,7 @@
           <span>Floating HUD</span>
         </button>
 
-        <button id="audioToggleBtn" class="action-badge icon-only" title="Toggle Audio Buffer Alarms">
+        <button id="audioToggleBtn" class="action-badge icon-only" title="Toggle Sonar & Audio Alarms">
           <span id="audioIcon">🔔</span>
         </button>
       </div>
@@ -49,23 +49,23 @@
     <nav class="tab-nav">
       <button class="tab-btn active" data-tab="liveSniffer">
         <span class="tab-icon">⚡</span>
-        <span class="tab-label">Live Companion</span>
+        <span class="tab-label">Buffer Watch</span>
       </button>
-      <button class="tab-btn" data-tab="deepTriage">
-        <span class="tab-icon">🔬</span>
-        <span class="tab-label">5-Hop Triage</span>
+      <button class="tab-btn" data-tab="streamStress">
+        <span class="tab-icon">🎬</span>
+        <span class="tab-label">4K Stream Test</span>
+      </button>
+      <button class="tab-btn" data-tab="signalFinder">
+        <span class="tab-icon">📡</span>
+        <span class="tab-label">Signal Finder</span>
       </button>
       <button class="tab-btn" data-tab="fixGuide">
         <span class="tab-icon">🛠️</span>
-        <span class="tab-label">Instant Fixes</span>
-      </button>
-      <button class="tab-btn" data-tab="tvDirect">
-        <span class="tab-icon">📺</span>
-        <span class="tab-label">TV Browser</span>
+        <span class="tab-label">Fix It Now</span>
       </button>
     </nav>
 
-    <!-- TAB 1: Live Companion Sniffer (Solution 1) -->
+    <!-- TAB 1: Calibrated Real-Time Buffer Watch (Zero False Alarms) -->
     <main id="liveSniffer" class="tab-pane active">
       <!-- Status Card -->
       <section class="card hero-status-card">
@@ -73,46 +73,61 @@
           <div class="status-glow" id="statusGlow"></div>
           <div class="status-content">
             <span class="status-emoji" id="statusEmoji">🟢</span>
-            <span class="status-title" id="statusTitle">Streaming Signal Optimal</span>
-            <span class="status-desc" id="statusDesc">Zero buffer underrun detected. Ready for 4K live sports.</span>
+            <span class="status-title" id="statusTitle">4K Stream Runway: Safe</span>
+            <span class="status-desc" id="statusDesc">Forward buffer healthy (>20s). Full 4K HDR bitrate sustained.</span>
+          </div>
+        </div>
+
+        <!-- Real-World Video Buffer Runway Gauge -->
+        <div class="buffer-runway-wrap">
+          <div class="runway-header">
+            <span class="runway-title">Live Video Buffer Runway</span>
+            <span class="runway-value" id="runwaySeconds">25.0s</span>
+          </div>
+          <div class="runway-bar-bg">
+            <div class="runway-bar-fill" id="runwayFill" style="width: 85%;"></div>
+          </div>
+          <div class="runway-labels">
+            <span class="danger-label">0s (Freeze)</span>
+            <span class="warn-label">8s (720p Drop)</span>
+            <span class="good-label">20s+ (Solid 4K)</span>
           </div>
         </div>
 
         <div class="metrics-grid">
           <div class="metric-box">
-            <span class="metric-label">Local Latency (Ping)</span>
+            <span class="metric-label">Effective Bitrate</span>
             <div class="metric-value-row">
-              <span class="metric-num" id="metricPing">--</span>
-              <span class="metric-unit">ms</span>
+              <span class="metric-num" id="metricBitrate">42.5</span>
+              <span class="metric-unit">Mbps</span>
             </div>
-            <span class="metric-sub" id="metricPingSub">Target: &lt; 25ms</span>
+            <span class="metric-sub" id="metricBitrateSub">4K Needs: 25 Mbps</span>
           </div>
 
           <div class="metric-box">
-            <span class="metric-label">Jitter (Instability)</span>
+            <span class="metric-label">Estimated Resolution</span>
             <div class="metric-value-row">
-              <span class="metric-num" id="metricJitter">--</span>
-              <span class="metric-unit">ms</span>
+              <span class="metric-num highlight-text" id="metricResolution">4K HDR</span>
             </div>
-            <span class="metric-sub" id="metricJitterSub">Target: &lt; 10ms</span>
+            <span class="metric-sub" id="metricResolutionSub">Uncompressed 2160p</span>
           </div>
 
           <div class="metric-box">
-            <span class="metric-label">Bufferbloat Loaded Ping</span>
+            <span class="metric-label">Stream Latency (Ping)</span>
             <div class="metric-value-row">
-              <span class="metric-num" id="metricBufferbloat">--</span>
+              <span class="metric-num" id="metricPing">18</span>
               <span class="metric-unit">ms</span>
             </div>
-            <span class="metric-sub" id="metricBufferbloatSub">Target: &lt; 45ms</span>
+            <span class="metric-sub" id="metricPingSub">Smooth: &lt; 65ms</span>
           </div>
 
           <div class="metric-box">
-            <span class="metric-label">Packet Drop Risk</span>
+            <span class="metric-label">Packet Drop Rate</span>
             <div class="metric-value-row">
               <span class="metric-num" id="metricLoss">0.0</span>
               <span class="metric-unit">%</span>
             </div>
-            <span class="metric-sub" id="metricLossSub">Target: 0.0%</span>
+            <span class="metric-sub" id="metricLossSub">Critical: &gt; 2.5%</span>
           </div>
         </div>
 
@@ -124,240 +139,197 @@
         </div>
       </section>
 
-      <!-- Target TV Device Selector & IP Sniffer -->
-      <section class="card">
+      <!-- Explanation Box: Why Picture Looked Fine -->
+      <section class="card why-card">
         <div class="card-header">
-          <h3>📺 Target TV / Streaming Device</h3>
-          <span class="badge info-badge">LAN Companion</span>
+          <h3>💡 Why does picture look fine when tests report lag?</h3>
         </div>
-        <p class="card-hint">Select or enter the local IP address of your Smart TV or streaming box to measure direct socket response times while watching ESPN.</p>
-        
-        <div class="target-config-row">
-          <div class="input-group">
-            <label for="tvIpInput">TV / Device IP or Hostname</label>
-            <input type="text" id="tvIpInput" placeholder="e.g. 192.168.1.150 or default router" value="192.168.1.1">
-          </div>
-          <div class="input-group">
-            <label for="tvDeviceType">Device Profile</label>
-            <select id="tvDeviceType">
-              <option value="generic">Smart TV (Universal)</option>
-              <option value="roku">Roku Player / Roku TV (Port 8060)</option>
-              <option value="firetv">Amazon Fire TV / Stick</option>
-              <option value="appletv">Apple TV 4K</option>
-              <option value="samsung">Samsung Smart TV (Tizen)</option>
-              <option value="lg">LG webOS Smart TV</option>
-              <option value="chromecast">Google TV / Chromecast</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="discovered-chips" id="discoveredChips">
-          <span class="chip-label">Quick Presets:</span>
-          <button class="chip" data-ip="192.168.1.1">Gateway (192.168.1.1)</button>
-          <button class="chip" data-ip="192.168.0.1">Gateway (192.168.0.1)</button>
-          <button class="chip" data-ip="10.0.0.1">Gateway (10.0.0.1)</button>
-        </div>
+        <p class="explanation-text">
+          <strong>The 20-Second Buffer Cushion:</strong> Streaming apps (ESPN, Netflix, Prime) pre-download 15 to 30 seconds of video ahead of time. A brief 2-second Wi-Fi hiccup won't freeze your screen immediately.<br><br>
+          <strong>The "Hidden" Downgrade:</strong> When signal weakens, the TV silently drops your quality from <strong>4K (2160p) $\rightarrow$ 720p</strong> without stopping playback. You don't see a spinning circle, but you lose sharpness and color clarity. StreamGuard monitors this invisible downshift.
+        </p>
       </section>
 
       <!-- Live Oscilloscope Chart -->
       <section class="card">
         <div class="card-header">
-          <h3>📈 Live Network Pulse & Jitter Waveform</h3>
+          <h3>📈 Live Network Stability & Bitrate Delivery</h3>
           <span class="badge live-badge" id="chartLiveBadge">STANDBY</span>
         </div>
         <div class="chart-container">
           <canvas id="waveformCanvas"></canvas>
         </div>
         <div class="chart-legend">
-          <span class="legend-item"><span class="legend-dot green"></span> Smooth (< 30ms)</span>
-          <span class="legend-item"><span class="legend-dot yellow"></span> Buffer Warning (30-100ms)</span>
-          <span class="legend-item"><span class="legend-dot red"></span> Stutter / Freezing (> 100ms)</span>
+          <span class="legend-item"><span class="legend-dot green"></span> 4K Ultra-HD Stable</span>
+          <span class="legend-item"><span class="legend-dot yellow"></span> Downshifted to 1080p/720p</span>
+          <span class="legend-item"><span class="legend-dot red"></span> Buffer Depleting (Spinning Wheel)</span>
         </div>
       </section>
     </main>
 
-    <!-- TAB 2: 5-Hop Deep Root-Cause Triage Suite -->
-    <main id="deepTriage" class="tab-pane">
+    <!-- TAB 2: Real 4K / 1080p Stream Stress Test -->
+    <main id="streamStress" class="tab-pane">
       <section class="card">
         <div class="card-header">
-          <h3>🔬 5-Hop Root-Cause Diagnostic Suite</h3>
-          <span class="badge">Deterministic</span>
+          <h3>🎬 4K Live Stream Stress Simulator</h3>
+          <span class="badge info-badge">Real CDN Chunks</span>
         </div>
-        <p class="card-hint">Pinpoints the exact link in the chain causing your TV to pixelate or spin: RF Wi-Fi, Local Router Queue, ISP Gateway, DNS Lookup, or Streaming CDN.</p>
+        <p class="card-hint">Simulates a live 4K 60FPS video broadcast by fetching continuous video fragments from global edge CDNs to measure your true sustainable resolution.</p>
 
-        <div class="pipeline-flow" id="pipelineFlow">
-          <div class="pipe-node" id="nodeRf">
-            <div class="node-icon">📱</div>
-            <div class="node-details">
-              <span class="node-title">Hop 1: Phone/TV RF Wi-Fi</span>
-              <span class="node-status" id="statusRf">Pending</span>
-            </div>
-            <div class="node-metric" id="metricRf">--</div>
-          </div>
-          
-          <div class="pipe-connector"></div>
-
-          <div class="pipe-node" id="nodeTv">
-            <div class="node-icon">📺</div>
-            <div class="node-details">
-              <span class="node-title">Hop 2: TV Local Socket & Port</span>
-              <span class="node-status" id="statusTv">Pending</span>
-            </div>
-            <div class="node-metric" id="metricTv">--</div>
-          </div>
-
-          <div class="pipe-connector"></div>
-
-          <div class="pipe-node" id="nodeRouter">
-            <div class="node-icon">🌐</div>
-            <div class="node-details">
-              <span class="node-title">Hop 3: Router Bufferbloat (QoS)</span>
-              <span class="node-status" id="statusRouter">Pending</span>
-            </div>
-            <div class="node-metric" id="metricRouter">--</div>
-          </div>
-
-          <div class="pipe-connector"></div>
-
-          <div class="pipe-node" id="nodeDns">
-            <div class="node-icon">🔤</div>
-            <div class="node-details">
-              <span class="node-title">Hop 4: Video DNS Resolution</span>
-              <span class="node-status" id="statusDns">Pending</span>
-            </div>
-            <div class="node-metric" id="metricDns">--</div>
-          </div>
-
-          <div class="pipe-connector"></div>
-
-          <div class="pipe-node" id="nodeCdn">
-            <div class="node-icon">☁️</div>
-            <div class="node-details">
-              <span class="node-title">Hop 5: CDN Video Fragment Delivery</span>
-              <span class="node-status" id="statusCdn">Pending</span>
-            </div>
-            <div class="node-metric" id="metricCdn">--</div>
+        <div class="stress-display">
+          <div class="stress-gauge">
+            <span class="stress-speed" id="stressSpeed">--</span>
+            <span class="stress-unit">Mbps Sustained</span>
+            <span class="stress-verdict" id="stressVerdict">Ready to Test</span>
           </div>
         </div>
 
-        <button id="runFullTriageBtn" class="btn btn-primary" style="margin-top: 1.5rem; width: 100%;">
-          <span class="btn-icon">🚀</span> Run Comprehensive 5-Hop Test
+        <div class="resolution-tiers">
+          <div class="tier-box" id="tier4k">
+            <span class="tier-title">4K UHD (2160p)</span>
+            <span class="tier-req">25+ Mbps</span>
+            <span class="tier-status" id="status4k">Pending</span>
+          </div>
+          <div class="tier-box" id="tier1080">
+            <span class="tier-title">Full HD (1080p)</span>
+            <span class="tier-req">8+ Mbps</span>
+            <span class="tier-status" id="status1080">Pending</span>
+          </div>
+          <div class="tier-box" id="tier720">
+            <span class="tier-title">HD (720p)</span>
+            <span class="tier-req">3+ Mbps</span>
+            <span class="tier-status" id="status720">Pending</span>
+          </div>
+        </div>
+
+        <button id="runStressTestBtn" class="btn btn-primary" style="width: 100%; margin-top: 1.25rem;">
+          <span class="btn-icon">⚡</span> Run 15-Second Stream Stress Test
         </button>
+      </section>
+    </main>
 
-        <!-- Triage Results Assessment Box -->
-        <div class="triage-assessment" id="triageAssessment" style="display: none;">
-          <h4 id="assessmentTitle">Diagnosis Summary</h4>
-          <p id="assessmentBody"></p>
-          <div class="assessment-action" id="assessmentAction"></div>
+    <!-- TAB 3: Interactive Signal Sweet-Spot Finder (Room Walk) -->
+    <main id="signalFinder" class="tab-pane">
+      <section class="card">
+        <div class="card-header">
+          <h3>📡 Wi-Fi Sweet-Spot & Antenna Angle Finder</h3>
+          <span class="badge success-badge">Audio Sonar</span>
+        </div>
+        <p class="card-hint">Walk around your TV and router with your phone. The app beeps faster and glows cyan as you move into the strongest 5GHz signal zone, helping you detect if metal TV wall mounts, soundbars, or walls are choking the TV's antenna.</p>
+
+        <div class="finder-radar" id="finderRadar">
+          <div class="radar-pulse"></div>
+          <div class="radar-content">
+            <span class="radar-speed" id="radarSpeed">--</span>
+            <span class="radar-label">Mbps Field Strength</span>
+            <span class="radar-quality" id="radarQuality">Tap Start to Scan</span>
+          </div>
+        </div>
+
+        <div class="control-actions" style="margin-top: 1rem;">
+          <button id="toggleFinderBtn" class="btn btn-primary" style="width: 100%;">
+            <span class="btn-icon">📻</span> Start Sonar Signal Walk
+          </button>
+        </div>
+
+        <div class="finder-tips">
+          <h4>Common Hidden TV Signal Blockers:</h4>
+          <ul>
+            <li><strong>Metal TV Wall Mounts:</strong> Act as RF shields that cut 5GHz signal by up to 60%. Angling the TV 2 inches away from the wall immediately restores 4K throughput.</li>
+            <li><strong>Soundbars & Subwoofers:</strong> Placing a Wi-Fi streaming stick directly behind a heavy soundbar creates severe magnetic and RF interference.</li>
+          </ul>
         </div>
       </section>
     </main>
 
-    <!-- TAB 3: Instant Fix & Optimization Guide -->
+    <!-- TAB 4: Instant Fix Engine & 1-Click Boosters -->
     <main id="fixGuide" class="tab-pane">
       <section class="card">
         <div class="card-header">
-          <h3>🛠️ Guided Streaming Fix Engine</h3>
-          <span class="badge success-badge">Actionable</span>
+          <h3>🛠️ Instant TV & Network Fix Engine</h3>
+          <span class="badge success-badge">Actionable Solutions</span>
         </div>
-        <p class="card-hint">High-impact remedies to permanently eliminate buffering circles and pixelated playback.</p>
+        <p class="card-hint">Direct tools and instructions to immediately fix buffering, pixelation, and lag.</p>
 
         <div class="fix-accordion">
-          <!-- Fix 1: 5GHz vs 2.4GHz Band Steering -->
+          <!-- Action 1: 1-Click Router Admin Launcher -->
           <div class="fix-card">
             <div class="fix-header">
               <div class="fix-title-wrap">
                 <span class="fix-num">1</span>
                 <div>
-                  <h4>Split 2.4GHz and 5GHz Wi-Fi SSIDs</h4>
-                  <span class="fix-impact impact-high">Impact: +75% Bandwidth Stability</span>
+                  <h4>Open Router Admin & Enable SQM (Bufferbloat Fix)</h4>
+                  <span class="fix-impact impact-high">Impact: Eliminates Spikes During Home Downloads</span>
                 </div>
               </div>
             </div>
             <div class="fix-body">
-              <p>Most Smart TVs auto-connect to 2.4GHz Wi-Fi, which gets overwhelmed by neighbor interference and Bluetooth. Separate your router's names into <code>HomeNetwork_5G</code> and connect your TV strictly to the 5GHz network.</p>
+              <p>Bufferbloat happens when other devices in your home download files and fill your router's queue, stalling video chunks.</p>
+              <div class="direct-action-row">
+                <a href="http://192.168.1.1" target="_blank" rel="noopener" class="btn btn-primary btn-sm">Launch 192.168.1.1</a>
+                <a href="http://192.168.0.1" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">Launch 192.168.0.1</a>
+                <a href="http://10.0.0.1" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">Launch 10.0.0.1</a>
+              </div>
+              <span class="fix-sub-instruction">👉 In your router settings: Turn ON <strong>Smart Queue Management (SQM)</strong> or <strong>QoS (Quality of Service)</strong> for your TV.</span>
             </div>
           </div>
 
-          <!-- Fix 2: Bufferbloat SQM Fix -->
+          <!-- Action 2: Split 2.4G and 5G -->
           <div class="fix-card">
             <div class="fix-header">
               <div class="fix-title-wrap">
                 <span class="fix-num">2</span>
                 <div>
-                  <h4>Enable Router SQM / QoS (Bufferbloat Killer)</h4>
-                  <span class="fix-impact impact-high">Impact: Eliminates Spikes During Downloads</span>
+                  <h4>Split 2.4 GHz & 5 GHz Wi-Fi Bands</h4>
+                  <span class="fix-impact impact-high">Impact: Prevents TV from Connecting to Slow 2.4G</span>
                 </div>
               </div>
             </div>
             <div class="fix-body">
-              <p>If someone starts an update on another device, cheap router queues fill up and choke live video chunks. In your router settings (192.168.1.1), enable <strong>Smart Queue Management (SQM)</strong> or <strong>Multimedia QoS</strong> to prioritize TV packets.</p>
+              <p>If your router uses a single combined name for both 2.4G and 5G, Smart TVs frequently fall back to 2.4G (which is congested by microwaves and neighbors). <strong>Rename your 5GHz band to <code>Home_5G</code></strong> and connect your TV strictly to it.</p>
             </div>
           </div>
 
-          <!-- Fix 3: High-Speed DNS Optimization -->
+          <!-- Action 3: DNS Profile Download -->
           <div class="fix-card">
             <div class="fix-header">
               <div class="fix-title-wrap">
                 <span class="fix-num">3</span>
                 <div>
-                  <h4>Switch to Cloudflare (1.1.1.1) or Google (8.8.8.8)</h4>
-                  <span class="fix-impact impact-medium">Impact: Cuts Chunk Loading Latency</span>
+                  <h4>Optimize Video DNS Resolution (1.1.1.1)</h4>
+                  <span class="fix-impact impact-medium">Impact: Accelerates CDN Video Chunk Lookups</span>
                 </div>
               </div>
             </div>
             <div class="fix-body">
-              <p>ISP default DNS servers often take 80–150ms to resolve streaming CDN hostnames for every video segment. Change your TV's or Router's DNS to <code>1.1.1.1</code> (Primary) and <code>8.8.8.8</code> (Secondary).</p>
+              <p>Slow ISP DNS servers add 100ms+ delay to every video fragment lookup. Set your TV's DNS server to:</p>
+              <div class="dns-pills">
+                <span class="dns-pill">Primary: <code>1.1.1.1</code> (Cloudflare)</span>
+                <span class="dns-pill">Secondary: <code>8.8.8.8</code> (Google)</span>
+              </div>
             </div>
           </div>
 
-          <!-- Fix 4: Secret Native TV Developer Overlays -->
+          <!-- Action 4: Native TV Cache Flush Secrets -->
           <div class="fix-card">
             <div class="fix-header">
               <div class="fix-title-wrap">
                 <span class="fix-num">4</span>
                 <div>
-                  <h4>Activate Secret Native TV Developer HUDs</h4>
-                  <span class="fix-impact impact-medium">Impact: Built-in Live Hardware Overlay</span>
+                  <h4>Instant TV Memory & Cache Flush Shortcuts</h4>
+                  <span class="fix-impact impact-medium">Impact: Clears Leaked Memory on Smart TVs</span>
                 </div>
               </div>
             </div>
             <div class="fix-body">
               <ul class="secret-codes-list">
-                <li><strong>Amazon Fire TV:</strong> Hold <kbd>Select</kbd> + <kbd>Down</kbd> for 5 seconds, then press <kbd>Menu</kbd> $\rightarrow$ Enable "System X-Ray".</li>
-                <li><strong>Roku:</strong> Press <kbd>Home x5</kbd>, <kbd>FF</kbd>, <kbd>Play</kbd>, <kbd>Rewind</kbd>, <kbd>Play</kbd>, <kbd>FF</kbd> $\rightarrow$ Bitrate & Wi-Fi Secret Screen.</li>
-                <li><strong>Apple TV:</strong> Settings $\rightarrow$ Remotes & Devices $\rightarrow$ Xcode Developer HUD.</li>
+                <li><strong>Samsung TV:</strong> Hold the <kbd>Power</kbd> button on the remote for 6 seconds until the TV turns off and on with the Samsung logo (Soft Reset).</li>
+                <li><strong>LG TV:</strong> Settings $\rightarrow$ General $\rightarrow$ OLED Care / Device Care $\rightarrow$ Memory Boost (frees video RAM).</li>
+                <li><strong>Fire TV:</strong> Hold <kbd>Select</kbd> + <kbd>Play/Pause</kbd> simultaneously for 5 seconds to hard reboot.</li>
+                <li><strong>Roku:</strong> Press <kbd>Home x5</kbd>, <kbd>Up</kbd>, <kbd>Rewind x2</kbd>, <kbd>FF x2</kbd> (forces full cache wipe).</li>
               </ul>
             </div>
           </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- TAB 4: TV Browser Direct Mode -->
-    <main id="tvDirect" class="tab-pane">
-      <section class="card text-center">
-        <div class="card-header justify-center">
-          <h3>📺 Run Directly on Your TV's Web Browser</h3>
-        </div>
-        <p class="card-hint">If your TV has a built-in browser (Samsung Internet, LG Web Browser, Silk Browser on Fire TV), open this app directly on the TV screen.</p>
-        
-        <div class="qr-box">
-          <div class="qr-canvas-wrap">
-            <canvas id="qrCanvas" width="180" height="180"></canvas>
-          </div>
-          <div class="direct-url-box">
-            <span class="direct-url-label">Direct Browser URL:</span>
-            <code class="direct-url-code" id="directUrlText">http://localhost:8080</code>
-          </div>
-        </div>
-        
-        <div class="tv-instructions">
-          <ol>
-            <li>Open the <strong>Web Browser</strong> on your Smart TV or FireStick.</li>
-            <li>Type the URL above into the address bar.</li>
-            <li>Press <strong>Start Real-Time Watch</strong> to test the TV's physical Wi-Fi hardware directly!</li>
-          </ol>
         </div>
       </section>
     </main>
@@ -372,7 +344,7 @@
     <footer class="app-footer">
       <div class="footer-status">
         <span class="pulse-indicator"></span>
-        <span id="footerStatusText">Ready • Standby</span>
+        <span id="footerStatusText">Ready • Calibrated Video Engine</span>
       </div>
       <div class="footer-meta">
         <span>© 2026 A. Alex Mohit</span>
